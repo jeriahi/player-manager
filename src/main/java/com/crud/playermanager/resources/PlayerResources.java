@@ -2,14 +2,14 @@ package com.crud.playermanager.resources;
 
 import com.crud.playermanager.dao.PlayerRepository;
 import com.crud.playermanager.model.Player;
+import com.crud.playermanager.util.CustomErrorType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +23,7 @@ public class PlayerResources {
     @Autowired
     private PlayerRepository playerRepository ;
 
+    // ------------------------Retrieve All Players------------------------
     @GetMapping("/players")
     public ResponseEntity<List<Player>> allPlayers(){
 
@@ -35,6 +36,7 @@ public class PlayerResources {
         return new ResponseEntity(players , HttpStatus.OK) ;
     }
 
+    // ---------------------Retrieve All Players names---------------------
     @GetMapping("/players/names")
     public ResponseEntity<Player> allPlayersNames(){
 
@@ -50,6 +52,7 @@ public class PlayerResources {
                 HttpStatus.OK) ;
     }
 
+    // ------------------------Retrieve Single Player------------------------
     @GetMapping("/players/{id}")
     public ResponseEntity<Player> onePlayer(@PathVariable Long id){
 
@@ -62,6 +65,7 @@ public class PlayerResources {
         return new ResponseEntity(player , HttpStatus.OK) ;
     }
 
+    // -------------------Retrieve one or more Player by name-------------------
     @GetMapping("/players/names/{name}")
     public ResponseEntity<Player> allPlayersByName(@PathVariable String name){
 
@@ -73,4 +77,24 @@ public class PlayerResources {
         log.info("Loading players with name contain: " + name + " ...");
         return new ResponseEntity(players, HttpStatus.OK) ;
     }
+
+    // ---------------------------Create new Players-----------------------------
+    @PostMapping("/players")
+    public ResponseEntity<Player> createPlayer(@RequestBody Player player,
+                                               UriComponentsBuilder ucBuilder){
+        log.info("Creating player : {}", player);
+        if(playerRepository.existsByFirstNameAndLastName(
+                player.getFirstName(), player.getLastName())){
+            log.error("Unable to create. A Player with name {} {} already exist",
+                    player.getFirstName(), player.getLastName());
+            return new ResponseEntity(new CustomErrorType("Unable to create. A User with name " +
+                    player.getFirstName() + " "
+                    + player.getLastName() + " already exist."),HttpStatus.CONFLICT);
+        }
+        Player createdPlayer = playerRepository.save(player) ;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(ucBuilder.path("/api/players/{id}").buildAndExpand(player.getId()).toUri());
+        return new ResponseEntity<Player>(createdPlayer, headers, HttpStatus.CREATED);
+    }
+
 }

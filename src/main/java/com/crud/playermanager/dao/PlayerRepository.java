@@ -14,4 +14,6 @@ public interface PlayerRepository extends JpaRepository<Player , Long> {
             "where p.firstName like %?1%" +
             "order by p.firstName asc ")
     public List<Player> findAllByName(String name) ;
+
+    public boolean existsByFirstNameAndLastName(String firstName, String lastName) ;
 }
