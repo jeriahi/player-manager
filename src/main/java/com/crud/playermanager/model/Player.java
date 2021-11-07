@@ -17,9 +17,7 @@ public class Player {
     @GeneratedValue
     private Long Id ;
     @NonNull
-    private String lastname ;
+    private String firstName ;
     @NonNull
-    private String firstname ;
-
-
+    private String lastName ;
 }

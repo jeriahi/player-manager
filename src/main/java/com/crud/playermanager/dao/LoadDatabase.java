@@ -14,14 +14,15 @@ public class LoadDatabase {
     CommandLineRunner initDatabase(PlayerRepository repository){
 
         return args -> {
-            log.info("Preloading " + repository.save(new Player("Cristiano", "Ronaldo")));
-            log.info("Preloading " + repository.save(new Player("Lionel", "Messi")));
-            log.info("Preloading " + repository.save(new Player("Zlatan", "Ibrahimovic")));
-            log.info("Preloading " + repository.save(new Player("Paulo", "Dybala")));
-            log.info("Preloading " + repository.save(new Player("Kylian", "Mbappé")));
-            log.info("Preloading " + repository.save(new Player("Robert", "Lewandowski")));
-            log.info("Preloading " + repository.save(new Player("Neymar", "da Silva")));
-            log.info("Preloading " + repository.save(new Player("Sergio", "Ramos")));
+            log.info("Preloading " + repository.save(new Player("Ronaldo", "Cristiano")));
+            log.info("Preloading " + repository.save(new Player("Messi", "Lionel")));
+            log.info("Preloading " + repository.save(new Player("Ibrahimovic", "Zlatan")));
+            log.info("Preloading " + repository.save(new Player("Dybala", "Paulo")));
+            log.info("Preloading " + repository.save(new Player("Mbappé", "Kylian")));
+            log.info("Preloading " + repository.save(new Player("Lewandowski", "Robert")));
+            log.info("Preloading " + repository.save(new Player("da Silva", "Neymar")));
+            log.info("Preloading " + repository.save(new Player("Ramos", "Sergio")));
+            log.info("Preloading " + repository.save(new Player("Ronaldo", "de Lima")));
         };
     }
 }
