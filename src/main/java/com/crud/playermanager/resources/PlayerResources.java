@@ -101,7 +101,8 @@ public class PlayerResources {
 
     // -----------------------------Update Players-------------------------------
     @PutMapping("/players/{id}")
-    public ResponseEntity<Player> updatePlayer(@PathVariable Long id, @RequestBody Player player){
+    public ResponseEntity<Player> updatePlayer(@PathVariable Long id,
+                                               @RequestBody Player player){
 
         log.info("Updating Player with id: {} ", id);
         Optional<Player> currentPlayer = playerRepository.findById(id);
@@ -120,4 +121,28 @@ public class PlayerResources {
         return new ResponseEntity<Player>(currentPlayer.get(), HttpStatus.OK) ;
     }
 
+    // -----------------------------Delete a Player-------------------------------
+    @DeleteMapping("/players/{id}")
+    public ResponseEntity<?> deletePlayer(@PathVariable("id") long id) {
+        log.info("Fetching & Deleting Player with id {}", id);
+
+        Optional<Player> player = playerRepository.findById(id);
+        if (!player.isPresent()) {
+            log.error("Unable to delete. Player with id {} not found.", id);
+            return new ResponseEntity(new CustomErrorType("Unable to delete. Player with id "
+                    + id + " not found."),
+                    HttpStatus.NOT_FOUND);
+        }
+        playerRepository.deleteById(id);
+        return new ResponseEntity<Player>(HttpStatus.NO_CONTENT);
+    }
+
+    // -----------------------------Delete All Players-------------------------------
+    @DeleteMapping("/players")
+    public ResponseEntity<?> deleteAllPlayer() {
+        log.info("Fetching & Deleting All Players");
+
+        playerRepository.deleteAll();
+        return new ResponseEntity<Player>(HttpStatus.NO_CONTENT);
+    }
 }
