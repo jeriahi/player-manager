@@ -87,14 +87,37 @@ public class PlayerResources {
                 player.getFirstName(), player.getLastName())){
             log.error("Unable to create. A Player with name {} {} already exist",
                     player.getFirstName(), player.getLastName());
-            return new ResponseEntity(new CustomErrorType("Unable to create. A User with name " +
+            return new ResponseEntity(
+                    new CustomErrorType("Unable to create. A User with name " +
                     player.getFirstName() + " "
                     + player.getLastName() + " already exist."),HttpStatus.CONFLICT);
         }
         Player createdPlayer = playerRepository.save(player) ;
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/api/players/{id}").buildAndExpand(player.getId()).toUri());
+        headers.setLocation(ucBuilder.path("/api/players/{id}")
+                .buildAndExpand(player.getId()).toUri());
         return new ResponseEntity<Player>(createdPlayer, headers, HttpStatus.CREATED);
+    }
+
+    // -----------------------------Update Players-------------------------------
+    @PutMapping("/players/{id}")
+    public ResponseEntity<Player> updatePlayer(@PathVariable Long id, @RequestBody Player player){
+
+        log.info("Updating Player with id: {} ", id);
+        Optional<Player> currentPlayer = playerRepository.findById(id);
+
+        if (!currentPlayer.isPresent()){
+            log.error("Unable to update. Player with id {} not found.", id);
+            return new ResponseEntity(new CustomErrorType("Unable to upate. Player with id " + id + " not found."),
+                    HttpStatus.NOT_FOUND);
+        }
+
+        currentPlayer.get().setFirstName(player.getFirstName());
+        currentPlayer.get().setLastName(player.getLastName());
+
+        playerRepository.save(currentPlayer.get()) ;
+
+        return new ResponseEntity<Player>(currentPlayer.get(), HttpStatus.OK) ;
     }
 
 }
