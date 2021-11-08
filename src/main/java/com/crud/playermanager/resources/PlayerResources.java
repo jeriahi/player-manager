@@ -99,7 +99,7 @@ public class PlayerResources {
         return new ResponseEntity<Player>(createdPlayer, headers, HttpStatus.CREATED);
     }
 
-    // -----------------------------Update Players-------------------------------
+    // -----------------------------Update a Player-------------------------------
     @PutMapping("/players/{id}")
     public ResponseEntity<Player> updatePlayer(@PathVariable Long id,
                                                @RequestBody Player player){
@@ -109,7 +109,8 @@ public class PlayerResources {
 
         if (!currentPlayer.isPresent()){
             log.error("Unable to update. Player with id {} not found.", id);
-            return new ResponseEntity(new CustomErrorType("Unable to upate. Player with id " + id + " not found."),
+            return new ResponseEntity(new CustomErrorType("Unable to upate. Player with id "
+                    + id + " not found."),
                     HttpStatus.NOT_FOUND);
         }
 
